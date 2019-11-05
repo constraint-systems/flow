@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { flowMove } from '../components/flows';
-import Head from 'next/head';
 import Info from '../components/info';
 
 let cursor_padding = 10;
@@ -19,8 +18,6 @@ const Home = () => {
   let keymap = useRef({});
   let readref = useRef(null);
   let cursorref = useRef([0, 0, 20, 20]);
-  let waterref = useRef([400, 0, 20, 1024]);
-  let counter = useRef(0);
   let handlerref = useRef(null);
   let moder = useRef('move');
   let flow_mark = useRef(null);
@@ -28,6 +25,7 @@ const Home = () => {
   let flows_visible = useRef(false);
   let [help, setHelp] = useState(true);
   let [mode, setMode] = useState('move');
+  let image = useRef(null);
 
   function KeyTip(letter, color) {
     return (
@@ -88,13 +86,13 @@ const Home = () => {
         if (iw > w) {
           resize_check = true;
           rw = w;
-          rh = w / ia;
+          rh = Math.round(w / ia);
         }
       } else {
         if (ih > h) {
           resize_check = true;
           rh = h;
-          rw = h * ia;
+          rw = Math.round(h * ia);
         }
       }
 
@@ -111,10 +109,22 @@ const Home = () => {
         }
       }
 
+      image.current = img;
+
+      moder.current = 'move';
+      setMode('move');
+      cursorref.current[0] = 0;
+      cursorref.current[1] = 0;
+      cursorref.current[2] = Math.min(cursorref.current[2], iw);
+      cursorref.current[3] = Math.min(cursorref.current[3], ih);
+      flows.current = [];
+      flow_mark.current = null;
+
       initImageCanvas(img);
       initScanCanvas(img);
       drawCursor();
 
+      cancelAnimationFrame(handlerref.current);
       runFlow();
       setRead();
     };
@@ -299,10 +309,85 @@ const Home = () => {
       toggleFlowVisibility();
     }
 
-    if (key === 'r') {
-      let check_clear = confirm('Clear all flows?');
-      if (check_clear) flows.current = [];
-      // TODO reset image
+    if (key === '?') {
+      setHelp(prevState => {
+        return !prevState;
+      });
+    }
+
+    if (key === 'c') {
+      let check_clear = confirm('Clear all flows and reset image?');
+      if (check_clear) {
+        moder.current = 'move';
+        setMode('move');
+        flows.current = [];
+        flow_mark.current = null;
+        let img = image.current;
+        let c = cref.current;
+        c.width = img.width;
+        c.height = img.height;
+        let ctx = c.getContext('2d');
+        ctx.drawImage(img, 0, 0, c.width, c.height);
+      }
+    }
+
+    if (key === 'x' && !repeat) {
+      let link = document.createElement('a');
+
+      var revokeURL = function() {
+        let me = this;
+        requestAnimationFrame(function() {
+          URL.revokeObjectURL(me.href);
+          me.href = null;
+        });
+        this.removeEventListener('click', revokeURL);
+      };
+
+      cref.current.toBlob(function(blob) {
+        link.setAttribute(
+          'download',
+          `flow-${new Date()
+            .toISOString()
+            .slice(0, -4)
+            .replace(/-/g, '')
+            .replace(/:/g, '')
+            .replace(/_/g, '')
+            .replace(/\./g, '')}Z.png`
+        );
+        link.setAttribute('href', URL.createObjectURL(blob));
+        link.addEventListener('click', revokeURL);
+        link.dispatchEvent(
+          new MouseEvent(`click`, {
+            bubbles: true,
+            cancelable: true,
+            view: window,
+          })
+        );
+      });
+    }
+
+    if (key === 'o' && !repeat) {
+      let input = document.createElement('input');
+      input.setAttribute('type', 'file');
+      input.dispatchEvent(
+        new MouseEvent(`click`, {
+          bubbles: true,
+          cancelable: true,
+          view: window,
+        })
+      );
+
+      function handleChange(e) {
+        for (const item of this.files) {
+          if (item.type.indexOf('image') < 0) {
+            continue;
+          }
+          let src = URL.createObjectURL(item);
+          initImage(src);
+        }
+        this.removeEventListener('change', handleChange);
+      }
+      input.addEventListener('change', handleChange);
     }
 
     if (moder.current === 'move') {
@@ -439,12 +524,54 @@ const Home = () => {
     keymap.current[e.key.toLowerCase()] = false;
   }
 
+  function onPaste(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    for (const item of e.clipboardData.items) {
+      if (item.type.indexOf('image') < 0) {
+        continue;
+      }
+      let file = item.getAsFile();
+      let src = URL.createObjectURL(file);
+      initImage(src);
+    }
+  }
+
+  function onDrag(e) {
+    e.stopPropagation();
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'copy';
+  }
+
+  function onDrop(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    let file = e.dataTransfer.files[0];
+    let filename = file.path ? file.path : file.name ? file.name : '';
+    let src = URL.createObjectURL(file);
+    initImage(src);
+  }
+
+  function clickKey(key) {
+    keymap.current[key] = true;
+    keyAction(key, false);
+    setTimeout(() => {
+      keymap.current[key] = false;
+    }, 300);
+  }
+
   useEffect(() => {
     window.addEventListener('keydown', downHandler);
     window.addEventListener('keyup', upHandler);
+    window.addEventListener('paste', onPaste, false);
+    window.addEventListener('dragover', onDrag, false);
+    window.addEventListener('drop', onDrop, false);
     return () => {
       window.removeEventListener('keydown', downHandler);
       window.removeEventListener('keyup', upHandler);
+      window.removeEventListener('paste', onPaste);
+      window.removeEventListener('dragover', onDrag, false);
+      window.removeEventListener('drop', onDrop, false);
       if (handlerref.current !== null) cancelAnimationFrame(handlerref.current);
     };
   }, []);
@@ -460,10 +587,6 @@ const Home = () => {
 
   return (
     <div>
-      <Head>
-        <title>Waterfalls</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
       <div style={{ position: 'relative', padding: cursor_padding }}>
         <canvas ref={cref} />
         <canvas
@@ -484,7 +607,7 @@ const Home = () => {
         }}
         ref={readref}
       />
-      <Info rlh={rlh} mode={mode} />
+      <Info rlh={rlh} mode={mode} help={help} clickKey={clickKey} />
 
       <style global jsx>{`
         @font-face {
@@ -506,6 +629,9 @@ const Home = () => {
         }
         canvas {
           display: block;
+        }
+        a {
+          color: inherit;
         }
       `}</style>
     </div>
