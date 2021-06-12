@@ -1,13 +1,86 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+* {
+  box-sizing: border-box;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+body {
+  margin: 0;
+  font-size: 13px;
+  line-height: 16px;
+  font-family: "JetBrains Mono", source-code-pro, Menlo, Monaco, Consolas,
+    "Courier New", monospace;
+  user-select: none;
+}
+
+canvas {
+  display: block;
+  margin: 0 auto;
+}
+
+#render {
+  cursor: crosshair;
+}
+
+.tleft {
+  text-align: left;
+}
+.tright {
+  text-align: right;
+}
+
+a {
+  color: inherit;
+}
+
+.inactive {
+  opacity: 0.5;
+}
+
+#scrollContainer {
+  position: absolute;
+  height: 100vh;
+  height: -webkit-fill-available;
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+#render {
+  touch-action: none;
+  user-select: none;
+}
+
+.flowDir {
+  border-radius: 100%;
+}
+
+@media (hover: hover) {
+  .flowDir:hover,
+  .hover:hover {
+    box-shadow: inset 0 0 200px rgba(0, 0, 0, 0.125);
+  }
+  .clickButton:hover {
+    background: #eee;
+  }
+  .hoverParent:hover .hoverChild {
+    box-shadow: inset 0 0 200px rgba(0, 0, 0, 0.125);
+  }
+}
+
+.active {
+  box-shadow: inset 0 0 200px rgba(0, 0, 0, 0.25);
+}
+
+input {
+  min-width: 0;
+  font-size: 16px;
+  font-family: inherit;
+  border-radius: 0;
+  padding: 0 4px;
+  border: solid 1px black;
+}
+
+div[role="button"] {
+  cursor: pointer;
+  user-select: none;
 }
