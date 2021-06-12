@@ -35,6 +35,8 @@ import {
   sModifyCell,
   sToggleShortcuts,
   aShowShortcuts,
+  aShowAbout,
+  sToggleShowAbout,
 } from "./State";
 import { loadImage } from "./Utils";
 import { domLoadImage, saveImage } from "./Actions";
@@ -266,6 +268,7 @@ function Divider() {
 function MenuBar() {
   let [showImageMenu, setShowImageMenu] = useRecoilState(aShowImageMenu);
   let [showViewMenu, setShowViewMenu] = useRecoilState(aShowViewMenu);
+  let [showAbout, setShowAbout] = useRecoilState(aShowAbout);
   const [image, setImage] = useRecoilState(aImage);
   const setFlows = useSetRecoilState(aFlows);
   const size = useRecoilValue(aWindowSize);
@@ -332,6 +335,7 @@ function MenuBar() {
     setShowImageMenu(false);
     setShowGridMenu(false);
     setShowViewMenu(false);
+    setShowAbout(false);
     callback(val);
   }
 
@@ -544,7 +548,70 @@ function MenuBar() {
           </div>
         </div>
       </MenuItem>
-      <MenuItem name="About"></MenuItem>
+      <MenuItem
+        name="About"
+        state={showAbout}
+        setState={clearAndSet.bind(null, setShowAbout)}
+      >
+        <div
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
+          style={{
+            display: "flex",
+            justifyContent: "space-Between",
+          }}
+        >
+          <div
+            style={{
+              lineHeight: 44 + "px",
+              height: 44,
+              padding: "0 8px",
+            }}
+          >
+            About
+          </div>
+          <div
+            onClick={(e) => {
+              e.stopPropagation();
+              setShowAbout(false);
+            }}
+            className="hover"
+            style={{
+              lineHeight: 44 + "px",
+              height: 44,
+              width: 44,
+              cursor: "pointer",
+            }}
+          >
+            &times;
+          </div>
+        </div>
+        <div
+          style={{
+            textAlign: "left",
+            padding: "0 8px 8px",
+            lineHeight: "18px",
+          }}
+        >
+          <p>
+            Flow is an experimental image editor. Set and direct pixel-flows
+            using touch or keyboard controls. Overlap flows to create
+            interesting effects.
+          </p>
+          <p>
+            A{" "}
+            <a
+              href="https://constraint.systems"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Constraint Systems
+            </a>{" "}
+            project.
+          </p>
+        </div>
+      </MenuItem>
     </div>
   );
 }

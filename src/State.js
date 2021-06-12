@@ -552,3 +552,16 @@ export let aShowAboutMenu = atom({
   key: "showAboutMenu",
   default: false,
 });
+
+export let aShowAbout = atom({
+  key: "showAbout",
+  default: false,
+});
+
+export let sToggleShowAbout = selector({
+  key: "toggleShowAbout",
+  set: ({ get, set }) => {
+    let about = get(aShowAbout);
+    set(aShowAbout, !about);
+  },
+});
