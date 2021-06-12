@@ -92,12 +92,12 @@ function StatusBar() {
       ) : (
         <Button
           click={toggleFlow}
-          style={{ width: "8.5ch", background: "#444", color: '#fff' }}
+          style={{ width: "8.5ch", background: "#444", color: "#fff" }}
         >
           Paused
         </Button>
       )}
-      <div style={{ width: "8.5ch" }}>{Math.round(zoom * 10000) / 100}%</div>
+      <div style={{ width: "8.5ch" }}>{Math.round(zoom * 100)}%</div>
       <Button
         style={{ minWidth: "5.5ch" }}
         click={() => {

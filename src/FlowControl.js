@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { render } from "react-dom";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import {
   aPadding,
@@ -114,7 +115,16 @@ function FlowControl() {
   let roff = rsize - 2;
 
   return mode === "flow" || mode === "resize" ? (
-    <React.Fragment>
+    <div
+      style={{
+        position: "absolute",
+        left: 0,
+        top: 0,
+        width: renderSize[0],
+        height: renderSize[1],
+        overflow: "hidden",
+      }}
+    >
       <div
         style={{
           position: "absolute",
@@ -376,7 +386,7 @@ function FlowControl() {
           </div>
         </div>
       ) : null}
-    </React.Fragment>
+    </div>
   ) : null;
 }
 

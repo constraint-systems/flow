@@ -19,7 +19,7 @@ import {
   sZoomIn,
   sZoomOut,
   sToggleShortcuts,
-  aShowAboutMenu,
+  aShowAbout,
 } from "./State.js";
 import { eq, loadImage } from "./Utils";
 import { domLoadImage, saveImage } from "./Actions";
@@ -29,6 +29,7 @@ function Keyboard() {
   const kmRef = useRef({});
   const moveCursorBy = useSetRecoilState(sMoveCursorBy);
   const [mode, setMode] = useRecoilState(aMode);
+  const setShowAbout = useSetRecoilState(aShowAbout);
   const addFlow = useSetRecoilState(sAddFlow);
   const toggleFlow = useSetRecoilState(sToggleFlow);
   const toggleShowFlow = useSetRecoilState(sToggleShowFlow);
@@ -39,7 +40,6 @@ function Keyboard() {
   const zoomIn = useSetRecoilState(sZoomIn);
   const zoomOut = useSetRecoilState(sZoomOut);
   const setShowGridMenu = useSetRecoilState(aShowGridMenu);
-  const setShowAboutMenu = useSetRecoilState(aShowAboutMenu);
   const toggleShortcuts = useSetRecoilState(sToggleShortcuts);
 
   useEffect(() => {
@@ -77,7 +77,7 @@ function Keyboard() {
       } else if (press === "?") {
         toggleShortcuts();
       } else if (press === "a") {
-        setShowAboutMenu(true);
+        setShowAbout(true);
       }
 
       switch (mode) {

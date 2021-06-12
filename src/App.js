@@ -57,6 +57,10 @@ function App() {
   useEffect(() => {
     setWindowSize();
     if (window.innerWidth > 1200) setShowShortcuts(true);
+    window.addEventListener("resize", setWindowSize);
+    return () => {
+      window.removeEventListener("resize", setWindowSize);
+    };
   }, []);
 
   return (
@@ -280,23 +284,15 @@ function Render() {
       let sizeW = image.width + Scene.padding * 2;
       let sizeH = image.height + Scene.padding * 2;
       let ratio = null;
-      if (sizeW > w && sizeH > h) {
-        let imageRatio = sizeW / sizeH;
-        let windowRatio = w / h;
-        if (imageRatio > windowRatio) {
-          ratio = (w - Scene.padding * 2) / image.width;
-          setZoom(ratio);
-        } else {
-          ratio = (h - Scene.padding * 2) / image.height;
-        }
-        setZoom(ratio);
-      } else if (sizeW > w) {
+      let imageRatio = sizeW / sizeH;
+      let windowRatio = w / h;
+      if (imageRatio > windowRatio) {
         ratio = (w - Scene.padding * 2) / image.width;
         setZoom(ratio);
-      } else if (sizeH > h) {
+      } else {
         ratio = (h - Scene.padding * 2) / image.height;
-        setZoom(ratio);
       }
+      setZoom(ratio);
     }
   }, [image, buttonSize]);
 

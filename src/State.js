@@ -9,6 +9,7 @@ export let aWindowSize = atom({
 export let sSetWindowSize = selector({
   key: "setWindowSize",
   set: ({ set }) => {
+    console.log("set window size");
     set(aWindowSize, [window.innerWidth, window.innerHeight]);
   },
 });
@@ -450,22 +451,18 @@ export let sZoomLevels = selector({
   get: ({ get }) => {
     let [w, h] = get(aWindowSize);
     let buttonSize = get(aButtonSize);
+    let showShortcuts = get(aShowShortcuts);
     let image = get(aImage);
     h -= buttonSize * 2 + 2 + 6;
+    if (showShortcuts) w -= 320;
     let sizeW = image.width + Scene.padding * 2;
     let sizeH = image.height + Scene.padding * 2;
     let ratio = null;
-    if (sizeW > w && sizeH > h) {
-      let imageRatio = sizeW / sizeH;
-      let windowRatio = w / h;
-      if (imageRatio > windowRatio) {
-        ratio = (w - Scene.padding * 2) / image.width;
-      } else {
-        ratio = (h - Scene.padding * 2) / image.height;
-      }
-    } else if (sizeW > w) {
+    let imageRatio = sizeW / sizeH;
+    let windowRatio = w / h;
+    if (imageRatio > windowRatio) {
       ratio = (w - Scene.padding * 2) / image.width;
-    } else if (sizeH > h) {
+    } else {
       ratio = (h - Scene.padding * 2) / image.height;
     }
     let levels = [0.25, 0.5, 1.0, 1.5, 2, 4];
@@ -546,11 +543,6 @@ export let sToggleShortcuts = selector({
     let shortcuts = get(aShowShortcuts);
     set(aShowShortcuts, !shortcuts);
   },
-});
-
-export let aShowAboutMenu = atom({
-  key: "showAboutMenu",
-  default: false,
 });
 
 export let aShowAbout = atom({

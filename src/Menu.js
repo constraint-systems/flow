@@ -608,7 +608,7 @@ function MenuBar() {
             >
               Constraint Systems
             </a>{" "}
-            project.
+            project
           </p>
         </div>
       </MenuItem>
