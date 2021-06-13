@@ -49,7 +49,7 @@ function FlowControl() {
   const size = buttonSize;
 
   let rsize = buttonSize;
-  let rdisplay = padding + 2;
+  let rdisplay = padding;
 
   function startResize(pinCorner, e) {
     resizeRef.current = true;
@@ -114,7 +114,7 @@ function FlowControl() {
 
   let roff = rsize - 2;
 
-  return mode === "flow" || mode === "resize" ? (
+  return (
     <div
       style={{
         position: "absolute",
@@ -125,132 +125,14 @@ function FlowControl() {
         overflow: "hidden",
       }}
     >
-      <div
-        style={{
-          position: "absolute",
-          left: cx - w / 2,
-          top: cy - h / 2,
-          width: w,
-          height: h,
-          fontSize: size > 40 ? 20 : 15,
-          lineHeight: buttonSize + "px",
-          textAlign: "center",
-          userSelect: "none",
-        }}
-      >
-        <div
-          className="stopClick"
-          onPointerDown={startResize.bind(null, "bottomRight")}
-          onPointerMove={resize}
-          onPointerUp={endResize}
-          style={{
-            position: "absolute",
-            left: -roff,
-            top: -roff,
-            width: rsize,
-            height: rsize,
-            cursor: "nwse-resize",
-          }}
-        >
-          <div
-            style={{
-              position: "absolute",
-              right: 0,
-              bottom: 0,
-              width: rdisplay,
-              height: rdisplay,
-              pointerEvents: "none",
-              background: cursorColor,
-            }}
-          ></div>
-        </div>
-        <div
-          className="stopClick"
-          onPointerDown={startResize.bind(null, "bottomLeft")}
-          onPointerMove={resize}
-          onPointerUp={endResize}
-          style={{
-            position: "absolute",
-            right: -roff,
-            top: -roff,
-            width: rsize,
-            height: rsize,
-            cursor: "nesw-resize",
-          }}
-        >
-          <div
-            style={{
-              position: "absolute",
-              left: 0,
-              bottom: 0,
-              width: rdisplay,
-              height: rdisplay,
-              pointerEvents: "none",
-              background: cursorColor,
-            }}
-          ></div>
-        </div>
-        <div
-          className="stopClick"
-          onPointerDown={startResize.bind(null, "topRight")}
-          onPointerMove={resize}
-          onPointerUp={endResize}
-          style={{
-            position: "absolute",
-            left: -roff,
-            bottom: -roff,
-            width: rsize,
-            height: rsize,
-            cursor: "nesw-resize",
-          }}
-        >
-          <div
-            style={{
-              position: "absolute",
-              right: 0,
-              top: 0,
-              width: rdisplay,
-              height: rdisplay,
-              pointerEvents: "none",
-              background: cursorColor,
-            }}
-          ></div>
-        </div>
-        <div
-          className="stopClick hover"
-          onPointerDown={startResize.bind(null, "topLeft")}
-          onPointerMove={resize}
-          onPointerUp={endResize}
-          style={{
-            position: "absolute",
-            right: -roff,
-            bottom: -roff,
-            width: rsize,
-            height: rsize,
-            cursor: "nwse-resize",
-          }}
-        >
-          <div
-            style={{
-              position: "absolute",
-              left: 0,
-              top: 0,
-              width: rdisplay,
-              height: rdisplay,
-              pointerEvents: "none",
-              background: cursorColor,
-            }}
-          ></div>
-        </div>
-      </div>
-      {mode === "flow" ? (
+      <React.Fragment>
         <div
           style={{
             position: "absolute",
-            left: afx,
-            top: afy,
-            width: fbw,
-            height: fbh,
+            left: cx - w / 2,
+            top: cy - h / 2,
+            width: w,
+            height: h,
             fontSize: size > 40 ? 20 : 15,
             lineHeight: buttonSize + "px",
             textAlign: "center",
@@ -258,136 +140,260 @@ function FlowControl() {
           }}
         >
           <div
-            className="stopClick hover"
-            onPointerDown={() => setMode("resize")}
+            className="stopClick"
+            onPointerDown={startResize.bind(null, "bottomRight")}
+            onPointerMove={resize}
+            onPointerUp={endResize}
             style={{
               position: "absolute",
-              top: `calc(50% - ${buttonSize / 2}px)`,
-              left: `calc(50% - ${buttonSize / 2}px)`,
-              width: buttonSize,
-              height: buttonSize,
-              background: cursorColor,
-              cursor: "pointer",
-            }}
-          >
-            &times;
-          </div>
-          <div
-            className="stopClick hoverParent"
-            onPointerDown={() => setFlow("n")}
-            style={{
-              position: "absolute",
-              top: -buttonSize / 2,
-              left: `calc(50% - ${buttonSize / 2}px)`,
-              width: buttonSize,
-              height: buttonSize * 1.25,
-              cursor: "pointer",
+              left: -roff,
+              top: -roff,
+              width: rsize,
+              height: rsize,
+              cursor: "nwse-resize",
             }}
           >
             <div
-              className="hoverChild"
               style={{
                 position: "absolute",
-                left: 0,
-                top: 0,
-                width: buttonSize,
-                height: buttonSize,
-                background: cursorColor,
-                cursor: "pointer",
+                right: 0,
+                bottom: 0,
+                width: rdisplay,
+                height: rdisplay,
                 pointerEvents: "none",
+                background: mode === "resize" ? cursorColor : "none",
+                border: `solid 2px ${cursorColor}`,
               }}
-            >
-              ↑
-            </div>
+            ></div>
           </div>
           <div
-            className="stopClick hoverParent"
-            onPointerDown={() => setFlow("s")}
+            className="stopClick"
+            onPointerDown={startResize.bind(null, "bottomLeft")}
+            onPointerMove={resize}
+            onPointerUp={endResize}
             style={{
               position: "absolute",
-              bottom: -buttonSize / 2,
-              left: `calc(50% - ${buttonSize / 2}px)`,
-              width: buttonSize,
-              height: buttonSize * 1.25,
-              cursor: "pointer",
+              right: -roff,
+              top: -roff,
+              width: rsize,
+              height: rsize,
+              cursor: "nesw-resize",
             }}
           >
             <div
-              className="hoverChild"
               style={{
                 position: "absolute",
                 left: 0,
                 bottom: 0,
-                width: buttonSize,
-                height: buttonSize,
-                background: cursorColor,
-                cursor: "pointer",
+                width: rdisplay,
+                height: rdisplay,
                 pointerEvents: "none",
+                background: mode === "resize" ? cursorColor : "none",
+                border: `solid 2px ${cursorColor}`,
               }}
-            >
-              ↓
-            </div>
+            ></div>
           </div>
           <div
-            className="stopClick hoverParent"
-            onPointerDown={() => setFlow("w")}
+            className="stopClick"
+            onPointerDown={startResize.bind(null, "topRight")}
+            onPointerMove={resize}
+            onPointerUp={endResize}
             style={{
               position: "absolute",
-              left: -buttonSize / 2,
-              top: `calc(50% - ${buttonSize / 2}px)`,
-              width: buttonSize * 1.25,
-              height: buttonSize,
-              cursor: "pointer",
+              left: -roff,
+              bottom: -roff,
+              width: rsize,
+              height: rsize,
+              cursor: "nesw-resize",
             }}
           >
             <div
-              className="hoverChild"
-              style={{
-                position: "absolute",
-                left: 0,
-                top: 0,
-                width: buttonSize,
-                height: buttonSize,
-                background: cursorColor,
-                cursor: "pointer",
-                pointerEvents: "none",
-              }}
-            >
-              ←
-            </div>
-          </div>
-          <div
-            className="stopClick hoverParent"
-            onPointerDown={() => setFlow("e")}
-            style={{
-              position: "absolute",
-              right: -buttonSize / 2,
-              top: `calc(50% - ${buttonSize / 2}px)`,
-              width: buttonSize * 1.25,
-              height: buttonSize,
-              cursor: "pointer",
-            }}
-          >
-            <div
-              className="hoverChild"
               style={{
                 position: "absolute",
                 right: 0,
                 top: 0,
+                width: rdisplay,
+                height: rdisplay,
+                pointerEvents: "none",
+                background: mode === "resize" ? cursorColor : "none",
+                border: `solid 2px ${cursorColor}`,
+              }}
+            ></div>
+          </div>
+          <div
+            className="stopClick hover"
+            onPointerDown={startResize.bind(null, "topLeft")}
+            onPointerMove={resize}
+            onPointerUp={endResize}
+            style={{
+              position: "absolute",
+              right: -roff - 1,
+              bottom: -roff - 1,
+              width: rsize,
+              height: rsize,
+              cursor: "nwse-resize",
+            }}
+          >
+            <div
+              style={{
+                position: "absolute",
+                left: 0,
+                top: 0,
+                width: rdisplay,
+                height: rdisplay,
+                pointerEvents: "none",
+                background: mode === "resize" ? cursorColor : "none",
+                border: `solid 2px ${cursorColor}`,
+              }}
+            ></div>
+          </div>
+        </div>
+        {mode === "flow" ? (
+          <div
+            style={{
+              position: "absolute",
+              left: afx,
+              top: afy,
+              width: fbw,
+              height: fbh,
+              fontSize: size > 40 ? 20 : 15,
+              lineHeight: buttonSize + "px",
+              textAlign: "center",
+              userSelect: "none",
+            }}
+          >
+            <div
+              className="stopClick hover"
+              onPointerDown={() => setMode("resize")}
+              style={{
+                position: "absolute",
+                top: `calc(50% - ${buttonSize / 2}px)`,
+                left: `calc(50% - ${buttonSize / 2}px)`,
                 width: buttonSize,
                 height: buttonSize,
                 background: cursorColor,
                 cursor: "pointer",
-                pointerEvents: "none",
               }}
             >
-              →
+              &times;
+            </div>
+            <div
+              className="stopClick hoverParent"
+              onPointerDown={() => setFlow("n")}
+              style={{
+                position: "absolute",
+                top: -buttonSize / 2,
+                left: `calc(50% - ${buttonSize / 2}px)`,
+                width: buttonSize,
+                height: buttonSize * 1.25,
+                cursor: "pointer",
+              }}
+            >
+              <div
+                className="hoverChild"
+                style={{
+                  position: "absolute",
+                  left: 0,
+                  top: 0,
+                  width: buttonSize,
+                  height: buttonSize,
+                  background: cursorColor,
+                  cursor: "pointer",
+                  pointerEvents: "none",
+                }}
+              >
+                ↑
+              </div>
+            </div>
+            <div
+              className="stopClick hoverParent"
+              onPointerDown={() => setFlow("s")}
+              style={{
+                position: "absolute",
+                bottom: -buttonSize / 2,
+                left: `calc(50% - ${buttonSize / 2}px)`,
+                width: buttonSize,
+                height: buttonSize * 1.25,
+                cursor: "pointer",
+              }}
+            >
+              <div
+                className="hoverChild"
+                style={{
+                  position: "absolute",
+                  left: 0,
+                  bottom: 0,
+                  width: buttonSize,
+                  height: buttonSize,
+                  background: cursorColor,
+                  cursor: "pointer",
+                  pointerEvents: "none",
+                }}
+              >
+                ↓
+              </div>
+            </div>
+            <div
+              className="stopClick hoverParent"
+              onPointerDown={() => setFlow("w")}
+              style={{
+                position: "absolute",
+                left: -buttonSize / 2,
+                top: `calc(50% - ${buttonSize / 2}px)`,
+                width: buttonSize * 1.25,
+                height: buttonSize,
+                cursor: "pointer",
+              }}
+            >
+              <div
+                className="hoverChild"
+                style={{
+                  position: "absolute",
+                  left: 0,
+                  top: 0,
+                  width: buttonSize,
+                  height: buttonSize,
+                  background: cursorColor,
+                  cursor: "pointer",
+                  pointerEvents: "none",
+                }}
+              >
+                ←
+              </div>
+            </div>
+            <div
+              className="stopClick hoverParent"
+              onPointerDown={() => setFlow("e")}
+              style={{
+                position: "absolute",
+                right: -buttonSize / 2,
+                top: `calc(50% - ${buttonSize / 2}px)`,
+                width: buttonSize * 1.25,
+                height: buttonSize,
+                cursor: "pointer",
+              }}
+            >
+              <div
+                className="hoverChild"
+                style={{
+                  position: "absolute",
+                  right: 0,
+                  top: 0,
+                  width: buttonSize,
+                  height: buttonSize,
+                  background: cursorColor,
+                  cursor: "pointer",
+                  pointerEvents: "none",
+                }}
+              >
+                →
+              </div>
             </div>
           </div>
-        </div>
-      ) : null}
+        ) : null}
+      </React.Fragment>
     </div>
-  ) : null;
+  );
 }
 
 export default FlowControl;

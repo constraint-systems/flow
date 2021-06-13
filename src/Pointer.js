@@ -10,9 +10,12 @@ import {
   aZoom,
   sAdjustZoom,
   aPadding,
+  aImage,
+  aFlows,
 } from "./State.js";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import Scene from "./Scene";
+import { onPaste, onDrag, onDrop } from "./Actions";
 
 function checkCursorPixel({ Scene, pixel }) {
   let cp = Scene.visibleCursor;
@@ -29,6 +32,8 @@ function Pointer() {
   const setDragResizeStart = useSetRecoilState(sSetDragResizeStart);
   const setCursorMoveStart = useSetRecoilState(sSetCursorMoveStart);
   const adjustZoom = useSetRecoilState(sAdjustZoom);
+  const setImage = useSetRecoilState(aImage);
+  const setFlows = useSetRecoilState(aFlows);
   const dragCursor = useSetRecoilState(sCursorMoveDrag);
   const dragResize = useSetRecoilState(sDragResize);
   const pointerRef = useRef({
@@ -44,6 +49,23 @@ function Pointer() {
     cursorDrag: false,
     ignore: false,
   });
+
+  function dropLoader(e) {
+    function callback(image) {
+      setImage(image);
+      Scene.image = image;
+      setFlows([]);
+    }
+    onDrop(e, callback);
+  }
+  function pasteLoader(e) {
+    function callback(image) {
+      setImage(image);
+      Scene.image = image;
+      setFlows([]);
+    }
+    onPaste(e, callback);
+  }
 
   useEffect(() => {
     const pointer = pointerRef.current;
@@ -194,10 +216,16 @@ function Pointer() {
     container.addEventListener("pointerdown", pointerDown);
     container.addEventListener("pointermove", pointerMove);
     container.addEventListener("pointerup", pointerUp);
+    window.addEventListener("paste", pasteLoader);
+    window.addEventListener("dragover", onDrag);
+    window.addEventListener("drop", dropLoader);
     return () => {
       container.removeEventListener("pointerdown", pointerDown);
       container.removeEventListener("pointermove", pointerMove);
       container.removeEventListener("pointerup", pointerUp);
+      window.removeEventListener("paste", pasteLoader);
+      window.removeEventListener("dragover", onDrag);
+      window.removeEventListener("drop", dropLoader);
     };
   }, [mode]);
 

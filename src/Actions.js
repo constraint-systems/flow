@@ -49,3 +49,32 @@ export function saveImage() {
     );
   });
 }
+
+export async function onPaste(e, callback) {
+  e.preventDefault();
+  e.stopPropagation();
+  for (const item of e.clipboardData.items) {
+    if (item.type.indexOf("image") < 0) {
+      continue;
+    }
+    let file = item.getAsFile();
+    let src = URL.createObjectURL(file);
+    let image = await loadImage(src);
+    callback(image);
+  }
+}
+
+export async function onDrop(e, callback) {
+  e.preventDefault();
+  e.stopPropagation();
+  let file = e.dataTransfer.files[0];
+  let src = URL.createObjectURL(file);
+  let image = await loadImage(src);
+  callback(image);
+}
+
+export async function onDrag(e) {
+  e.stopPropagation();
+  e.preventDefault();
+  e.dataTransfer.dropEffect = "copy";
+}

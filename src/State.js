@@ -349,7 +349,7 @@ export let sRenderSize = selector({
 
 export let aMode = atom({
   key: "mode",
-  default: "flow",
+  default: "move",
 });
 
 export let aFlowChoicePoint = atom({
