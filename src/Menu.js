@@ -609,6 +609,14 @@ function MenuBar() {
               Constraint Systems
             </a>{" "}
             project
+            <br />
+            <a
+              href="https://github.com/constraint-systems/flow"
+              target="_blank"
+              rel="noreferrer"
+            >
+              View source
+            </a>
           </p>
         </div>
       </MenuItem>
